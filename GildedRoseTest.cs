@@ -6,12 +6,19 @@ namespace csharpcore
     public class GildedRoseTest
     {
         [Fact]
-        public void foo()
+        public void Foo()
         {
-            IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 0, Quality = 0 } };
+            IList<Item> Items = new List<Item> {
+                new Item { Name = "BackStage passes Metallica", SellIn = 3, Quality = 10 },
+                new Item { Name = "conjured backstage Apple", SellIn = 3, Quality = 10 }
+            };
+
             GildedRose app = new GildedRose(Items);
             app.UpdateQuality();
-            Assert.Equal("fixme", Items[0].Name);
+            
+            
+            Assert.Equal(13, Items[0].Quality);
+            Assert.Equal(8, Items[1].Quality);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace csharpcore
 {
@@ -14,74 +15,74 @@ namespace csharpcore
         {
             for (var i = 0; i < Items.Count; i++)
             {
-                if (Items[i].Name != "Aged Brie" && Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
+                string itemName = Items[i].Name.ToUpper();
+                string[] keys = new string[] {"AGED BRIE","SULFURAS", "BACKSTAGE PASSES", "CONJURED" };
+                string sKeyResult = keys.FirstOrDefault<string>(s => itemName.Contains(s));
+
+                Items[i].SellIn--;
+
+                switch (sKeyResult)
                 {
-                    if (Items[i].Quality > 0)
-                    {
-                        if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
+                    case "SULFURAS":
+                        Items[i].SellIn++;
+                        break;
+                    case "AGED BRIE":
+                        if (Items[i].SellIn >= 0)
                         {
-                            Items[i].Quality = Items[i].Quality - 1;
-                        }
-                    }
-                }
-                else
-                {
-                    if (Items[i].Quality < 50)
-                    {
-                        Items[i].Quality = Items[i].Quality + 1;
-
-                        if (Items[i].Name == "Backstage passes to a TAFKAL80ETC concert")
-                        {
-                            if (Items[i].SellIn < 11)
-                            {
-                                if (Items[i].Quality < 50)
-                                {
-                                    Items[i].Quality = Items[i].Quality + 1;
-                                }
-                            }
-
-                            if (Items[i].SellIn < 6)
-                            {
-                                if (Items[i].Quality < 50)
-                                {
-                                    Items[i].Quality = Items[i].Quality + 1;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-                {
-                    Items[i].SellIn = Items[i].SellIn - 1;
-                }
-
-                if (Items[i].SellIn < 0)
-                {
-                    if (Items[i].Name != "Aged Brie")
-                    {
-                        if (Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
-                        {
-                            if (Items[i].Quality > 0)
-                            {
-                                if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-                                {
-                                    Items[i].Quality = Items[i].Quality - 1;
-                                }
-                            }
+                            if (Items[i].Quality < 50)
+                                Items[i].Quality++;
                         }
                         else
                         {
-                            Items[i].Quality = Items[i].Quality - Items[i].Quality;
+                            if (Items[i].Quality < 50)
+                                Items[i].Quality += 2;
                         }
-                    }
-                    else
-                    {
-                        if (Items[i].Quality < 50)
+                        if (Items[i].Quality > 50)
+                            Items[i].Quality = 50;
+
+                        break;
+
+                    case "BACKSTAGE PASSES":
+                        if (Items[i].Quality > 0)
                         {
-                            Items[i].Quality = Items[i].Quality + 1;
+                            if (Items[i].SellIn >= 10)
+                                Items[i].Quality++;
+                            else if (Items[i].SellIn < 10 && Items[i].SellIn >= 5)
+                                Items[i].Quality += 2;
+                            else if (Items[i].SellIn < 5 && Items[i].SellIn >= 0)
+                                Items[i].Quality += 3;
+                            else if (Items[i].SellIn < 0)
+                                Items[i].Quality = 0;
                         }
-                    }
+                        if (Items[i].SellIn >= 0 && Items[i].Quality > 50)
+                            Items[i].Quality = 50;
+
+                        break;
+                    case "CONJURED":
+                        if (Items[i].SellIn >= 0)
+                        {
+                            if (Items[i].Quality > 0)
+                                Items[i].Quality -= 2;
+                        }
+                        if (Items[i].Quality < 0)
+                            Items[i].Quality = 0;
+
+                        break;
+                    default:
+                        if (Items[i].SellIn >= 0)
+                        {
+                            if (Items[i].Quality > 0)
+                                Items[i].Quality--;
+                        }
+                        else
+                        {
+                            if (Items[i].Quality > 0)
+                                Items[i].Quality -= 2;
+                        }
+                        if (Items[i].Quality < 0)
+                            Items[i].Quality = 0;
+
+                        break;
                 }
             }
         }
